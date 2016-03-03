@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,8 +27,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnAdd;
     Button btnClear;
     Button btnRead;
-    SQLiteOpenHelper db;
-    //SQLiteDatabase db = null;
+    Cursor cursor;
+    //SQLiteOpenHelper db;
+    SQLiteDatabase db;
 
 
 
@@ -67,7 +69,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(this, "Данные записаны в таблицу!" + name + Email, Toast.LENGTH_SHORT).show();
                 break;
                     case R.id.btnRead:
-                        Cursor cursor = db
+                        cursor = db.query(dbHelper.DB_NAME, null, null, null, null, null, null);
+
+
+                        if (cursor.moveToFirst()) {
+
+                            int idColInd = cursor.getColumnIndex(dbHelper._ID);
+                            int nameColInd = cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_NAME);
+                            int emailColInd = cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL);
+
+
+                            do {
+                                Log.d(TAG,
+                                        "ID "+ cursor.getInt(idColInd)+
+                                        ", NAME "+ cursor.getString(nameColInd)+
+                                        ", EMAIl "+cursor.getString(emailColInd));
+
+                            } while (cursor.moveToNext());
+
+                        } else {
+                            Log.d(TAG, "В базе нет данных!");
+                        }
+
+                        cursor.close();
+
+
 
                 break;
                     case R.id.btnClear:
@@ -76,4 +102,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
 }
