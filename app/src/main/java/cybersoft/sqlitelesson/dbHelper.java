@@ -13,13 +13,13 @@ public class dbHelper extends SQLiteOpenHelper implements BaseColumns {
     public static final int DB_VERSION = 1;
     public static final String DB_TEBLE_NAME = "Tebel_Name";
     public static final String DB_TEBLE_NAME_COLUMN_NAME = "Name";
-    public static final String DB_TEBLE_NAME_COLUMN_EMAIL = "Phone";
+    public static final String DB_TEBLE_NAME_COLUMN_EMAIL = "Mail";
     //public static final String DB_TEBLE_NAME_COLUMN_Age = "Age";
 
     private static final String DATABASE_CREATE_SCRIPT = "create table "
             + DB_TEBLE_NAME + " (" + BaseColumns._ID
             + " integer primary key autoincrement, " + DB_TEBLE_NAME_COLUMN_NAME
-            + " text not null, " + DB_TEBLE_NAME_COLUMN_EMAIL + " integer);";
+            + " text not null, " + DB_TEBLE_NAME_COLUMN_EMAIL + " text);";
 
 
 
@@ -44,7 +44,7 @@ public class dbHelper extends SQLiteOpenHelper implements BaseColumns {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Запишем в журнал
-        Log.w("SQLite", "Обновляемся с версии " + oldVersion + " на версию " + newVersion);
+        Log.w("SQL", "Обновляемся с версии " + oldVersion + " на версию " + newVersion);
 
         // Удаляем старую таблицу и создаём новую
         db.execSQL("DROP TABLE IF IT EXISTS " + DB_TEBLE_NAME);

@@ -60,4 +60,15 @@
         android:layout_below="@+id/editEmail"
         android:layout_alignRight="@+id/editEmail"
         android:layout_alignEnd="@+id/editEmail" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textView"
+        android:layout_below="@+id/btnAdd"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/btnClear"
+        android:layout_alignEnd="@+id/btnClear" />
 </RelativeLayout>

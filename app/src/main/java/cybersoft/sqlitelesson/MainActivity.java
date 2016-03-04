@@ -1,36 +1,32 @@
 package cybersoft.sqlitelesson;
 
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import java.security.PublicKey;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String TAG = "Log_d";
 
-    private dbHelper mDatabaseHelper;
-    private SQLiteDatabase mSqLiteDatabase;
+    dbHelper mDatabaseHelper;
+    SQLiteDatabase mSqLiteDatabase;
 
 
     Button btnAdd;
     Button btnClear;
     Button btnRead;
-    Cursor cursor;
     EditText Email;
     EditText Name;
-    //SQLiteOpenHelper db;
-    SQLiteDatabase db;
+    TextView textView;
+
 
 
     @Override
@@ -44,69 +40,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRead = (Button) findViewById(R.id.btnRead);
         btnClear = (Button) findViewById(R.id.btnClear);
 
+        textView = (TextView) findViewById(R.id.textView);
+
+        btnAdd.setOnClickListener(this);
+        btnRead.setOnClickListener(this);
+        btnClear.setOnClickListener(this);
+
         Log.d(TAG, "Кнопки определены");
 
 
-
-    }
-
-
-
-    @Override
-    public void onClick(View v) {
-        Log.d(TAG, "Зашли в онклик");
-        switch (v.getId()) {
-            case R.id.btnAdd:
-                        Log.d(TAG, "Нажата кнопка ADD");
         //так как в классе dbHelp описаны два (три ?) конструктора мы можем воспользоваться одним из них
         //mDatabaseHelper = new dbHelper(this, "mydatabase.db", null, 1);
         mDatabaseHelper = new dbHelper(this);
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
         Toast.makeText(getApplicationContext(), "База данных создано только что", Toast.LENGTH_SHORT).show();
 
-        ContentValues values = new ContentValues();
-        // Задайте значения для каждого столбца
-        String name = findViewById(R.id.editName).toString();
-        values.put(dbHelper.DB_TEBLE_NAME_COLUMN_NAME, name);
+    }
 
-        String Email = findViewById(R.id.editEmail).toString();
-        values.put(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL, Email);
 
-        // Вставляем данные в таблицу
-        mSqLiteDatabase.insert("Tebel_Name", null, values);
-        Toast.makeText(this, "Данные записаны в таблицу!" + name + Email, Toast.LENGTH_LONG).show();
-        Log.d(TAG, "Нажата кнопка ADD" + name + Email);
+    @Override
+    public void onClick(View v) {
+        Log.d(TAG, "Зашли в онклик");
+
+        switch (v.getId()) {
+            case R.id.btnAdd:
+                Log.d(TAG, "Нажата кнопка ADD");
+                /*if (mSqLiteDatabase.equals(null)){
+                    mDatabaseHelper = new dbHelper(this);
+                    mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();
+                }*/
+
+                ContentValues values = new ContentValues();
+                // Задайте значения для каждого столбца
+                values.put(dbHelper.DB_TEBLE_NAME_COLUMN_NAME, Name.getText().toString());
+                values.put(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL, Email.getText().toString());
+                // Вставляем данные в таблицу
+                mSqLiteDatabase.insert(dbHelper.DB_TEBLE_NAME, null, values);
+
+                Toast.makeText(this, "Данные записаны в таблицу!" + Name.getText().toString() + Email.getText().toString(), Toast.LENGTH_LONG).show();
+                //Log.d(TAG, "Имя: " + dbHelper.DB_TEBLE_NAME_COLUMN_NAME + " Почта: " + dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL);
+                Log.d(TAG, "Имя: " + Name.getText().toString() + " Почта: " + Email.getText().toString());
+                Name.setText("");
+                Email.setText("");
                 break;
             case R.id.btnRead:
                 Log.d(TAG, "Зашли в Read");
-                cursor = db.query(dbHelper.DB_NAME, null, null, null, null, null, null);
+                //Cursor cursor = mSqLiteDatabase.query(dbHelper.DB_TEBLE_NAME, new String[]{dbHelper.DB_TEBLE_NAME_COLUMN_NAME,
+                        //dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL}, null, null, null, null, null, null);
 
+                Cursor cursor =mSqLiteDatabase.query(dbHelper.DB_TEBLE_NAME, null,null,null,null,null,null);
 
                 if (cursor.moveToFirst()) {
-
-                    int idColInd = cursor.getColumnIndex(dbHelper._ID);
-                    int nameColInd = cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_NAME);
-                    int emailColInd = cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL);
-
-
+                    boolean bool = cursor.moveToFirst();
+                    Log.d(TAG," "+bool);
                     do {
                         Log.d(TAG,
-                                "ID " + cursor.getInt(idColInd) +
-                                        ", NAME " + cursor.getString(nameColInd) +
-                                        ", EMAIl " + cursor.getString(emailColInd));
-
+                                "ID " + cursor.getInt(cursor.getColumnIndex(dbHelper._ID)) +
+                                        ", NAME " + cursor.getString(cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_NAME)) +
+                                        ", EMAIl " + cursor.getString(cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL)));
                     } while (cursor.moveToNext());
-
                 } else {
                     Log.d(TAG, "В базе нет данных!");
                 }
 
                 cursor.close();
-
-
                 break;
-            case R.id.btnClear:
 
+            case R.id.btnClear:
+                mSqLiteDatabase.delete(dbHelper.DB_TEBLE_NAME,null,null);
+                Log.d(TAG,"Таблица " + dbHelper.DB_TEBLE_NAME +" удалена!");
                 break;
         }
     }
