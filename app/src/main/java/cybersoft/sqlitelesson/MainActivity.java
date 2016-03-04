@@ -91,13 +91,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Cursor cursor =mSqLiteDatabase.query(dbHelper.DB_TEBLE_NAME, null,null,null,null,null,null);
 
                 if (cursor.moveToFirst()) {
+
                     boolean bool = cursor.moveToFirst();
-                    Log.d(TAG," "+bool);
+                    Log.d(TAG, " " + bool);
                     do {
                         Log.d(TAG,
                                 "ID " + cursor.getInt(cursor.getColumnIndex(dbHelper._ID)) +
                                         ", NAME " + cursor.getString(cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_NAME)) +
                                         ", EMAIl " + cursor.getString(cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_EMAIL)));
+                        textView.setText(cursor.getString(cursor.getColumnIndex(dbHelper.DB_TEBLE_NAME_COLUMN_NAME)).toString());
                     } while (cursor.moveToNext());
                 } else {
                     Log.d(TAG, "В базе нет данных!");
